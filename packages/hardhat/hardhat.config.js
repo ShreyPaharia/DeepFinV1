@@ -191,6 +191,12 @@ module.exports = {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
     },
+    anchor: {
+      default:1,
+    },
+    supplier1: {
+      default:2,
+    },
   },
 };
 
