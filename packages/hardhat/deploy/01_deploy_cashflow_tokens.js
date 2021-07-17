@@ -9,6 +9,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     });
 
     const usdc = await ethers.getContract("USDC", deployer);
+    usdc.transfer(anchor,'5000000000000000000000')
 
     await deploy("CashflowTokens", {
         from: deployer,
