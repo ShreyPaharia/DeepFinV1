@@ -197,6 +197,9 @@ module.exports = {
     supplier1: {
       default:2,
     },
+    supplier2: {
+      default:3,
+    },
   },
 };
 

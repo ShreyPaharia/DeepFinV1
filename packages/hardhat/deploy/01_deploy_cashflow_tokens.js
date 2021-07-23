@@ -2,14 +2,13 @@
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
-    const { deployer,anchor,supplier1 } = await getNamedAccounts();
+    const { deployer,anchor,supplier1,supplier2 } = await getNamedAccounts();
     await deploy("USDC", {
       from: deployer,
       log: true,
     });
 
     const usdc = await ethers.getContract("USDC", deployer);
-    usdc.transfer(anchor,'5000000000000000000000')
 
     await deploy("CashflowTokens", {
         from: deployer,
@@ -28,6 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
       const multiSigWallet = await ethers.getContract("MultiSigWallet", deployer);
       multiSigWallet.addSupplier(supplier1);
+      multiSigWallet.addSupplier(supplier2);
 
       await deploy("MultiSigWalletFactory", {
         from: deployer,
@@ -41,9 +41,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         log: true,
       });
 
+      usdc.transfer(anchor,'5000000000000000000000')
+
+      
       console.log("Deployer: ",deployer)
       console.log("Anchor: ",anchor)
       console.log("Supplier: ",supplier1)
+
+
   
     /*
       // Getting a previously deployed contract
