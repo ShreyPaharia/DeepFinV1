@@ -24,7 +24,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "mumbai";
 
 function mnemonic() {
   try {
@@ -69,6 +69,12 @@ module.exports = {
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mumbai: {
+      url: "https://matic-mumbai.chainstacklabs.com", // <---- YOUR INFURA ID! (or it won't work)
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -193,12 +199,15 @@ module.exports = {
     },
     anchor: {
       default:1,
+      "mumbai": "0x5cC377D9c84136E708C612b00a2617DF635f83ae"
     },
     supplier1: {
       default:2,
+      "mumbai": "0x5cC377D9c84136E708C612b00a2617DF635f83ae"
     },
     supplier2: {
       default:3,
+      "mumbai": "0x825aE6fb177186e9551ab1CDd6D4aB10B22A0Dba"
     },
   },
 };

@@ -47,9 +47,9 @@ import { ExampleUI, Hints, Subgraph, SupplierUI, AnchorUI, LoginUI, RegisterUI, 
 
 /// 📡 What chain are your contracts deployed to?
 // const targetNetwork = NETWORKS.kovan; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
-// 😬 Sorry for all the console logging
+// 😬 Sorry for all the console llocalhostogging
 const DEBUG = true;
 
 // 🛰 providers
@@ -59,8 +59,8 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544");
-const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
+const scaffoldEthProvider = new StaticJsonRpcProvider("https://matic-mumbai.chainstacklabs.com");
+const mainnetInfura = new StaticJsonRpcProvider("https://rpc-mumbai.matic.today");
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
