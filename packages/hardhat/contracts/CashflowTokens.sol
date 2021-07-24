@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
@@ -111,7 +112,7 @@ contract CashflowTokens is ERC1155 {
     )
     public
     view
-    returns (TokenMetaData[] memory _transactions)
+    returns (TokenMetaData[] memory)
     {
         TokenMetaData[] memory _transactions = new TokenMetaData[](lastTokenId+1);
         for (uint256 i=0; i<=lastTokenId; i++) {
@@ -125,7 +126,7 @@ contract CashflowTokens is ERC1155 {
     )
     public
     view
-    returns (uint256[] memory balances)
+    returns (uint256[] memory)
     {
         uint256[] memory balances = new uint256[](lastTokenId+1);
         for (uint256 i=0; i<=lastTokenId; i++) {

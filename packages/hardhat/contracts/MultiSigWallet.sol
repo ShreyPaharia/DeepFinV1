@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./CashflowTokens.sol";
@@ -149,7 +150,6 @@ contract MultiSigWallet {
     /// @param _owners List of initial owners.
     /// @param _required Number of required decisions.
     constructor(address[] memory _owners, uint _required, CashflowTokens _cashflowTokens)
-    public
     validRequirement(_owners.length, _required)
     {
         for (uint i=0; i<_owners.length; i++) {
@@ -486,7 +486,7 @@ contract MultiSigWallet {
     function getAllTransactions()
     public
     view
-    returns (Transaction[] memory _transactions)
+    returns (Transaction[] memory)
     {
         Transaction[] memory _transactions = new Transaction[](transactionCount);
         for (uint i=0; i<transactionCount; i++) {

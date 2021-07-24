@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: agpl-3.0
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import { IERC20, ILendingPool, IProtocolDataProvider, IStableDebtToken } from './Interfaces.sol';
@@ -25,7 +25,7 @@ contract LendingPoolDF is ERC1155Holder{
     CashflowTokens cashflowTokens;
     string name="Deep Fin Lending Pool";
 
-    constructor (CashflowTokens _cashflowTokens) public {
+    constructor (CashflowTokens _cashflowTokens) {
         owner = msg.sender;
         cashflowTokens = _cashflowTokens;
     }
