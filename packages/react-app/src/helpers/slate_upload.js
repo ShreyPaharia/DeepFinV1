@@ -1,18 +1,22 @@
-export const uploadSlate = async () => {
-    const url = 'https://uploads.slate.host/api/public/bafybeieh4u6tkbavz33xu2h3r4boapbnedhutrgudsr23llef2f6wdammy'; // collection ID
 
-    let file = e.target.files[0];
+
+const uploadSlate = async (buffer) => {
+    const url = 'https://uploads.slate.host/api/public/df680546-a4dc-45bc-8d0b-5e6f488fd877'; // collection ID
+  
     let data = new FormData();
-
-    data.append("data", file);
+    const date = new Date();
+    data.append("data", buffer, date.toISOString()+".png");
 
     const response = await fetch(url, {
         method: 'POST',
         headers: {
-            Authorization: 'Basic SLA450bbe9a-8d01-4d3f-b32a-93b4e3cdb6f1TE', // API key  
+            Authorization: 'Basic SLA0e9b8b3b-2081-430e-a830-740cd8e00efdTE', // API key  
         },
         body: data
     });
 
-    return response;
+    const json = await response.json();
+    return json;
 }
+
+export default uploadSlate;

@@ -5,10 +5,13 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from "react";
-import {Ipfs} from "../helpers"
+import {Ipfs, Slate} from "../helpers"
 import AnchorService from "../anchorServices/anchor.service";
 import { Document, Page } from "react-pdf";
 import aggrementPdf from "./PaymentAggrement.pdf";
+
+import { STORAGE, STORAGE_URL } from "../constants";
+
 
 
 export default function SupplierUI({
@@ -65,23 +68,24 @@ const submitOnConfirmation = async () => {
   console.log("***selectedAnchor", selectedAnchor);
   console.log("MultiSigWallet ", writeContracts.MultiSigWallet);
 
-  let supplier = await tx(writeContracts.MultiSigWallet.suppliers(0));
-  console.log(" supplier ", supplier);
+  // let supplier = await tx(writeContracts.MultiSigWallet.suppliers(0));
+  // console.log(" supplier ", supplier);
 
   // const supplier = await writeContracts.MultiSigWallet.suppliers(0);
-  if(!supplier) {
-    console.log(" Adding supplier");
-    supplier = await tx(writeContracts.MultiSigWallet.addSupplier(address));
-    const checkSupplier = await tx(writeContracts.MultiSigWallet.suppliers());
-    console.log(" added supplier ", supplier, checkSupplier);
-    console.log(" added supplier ", supplier);
-  }
-  if(supplier){
+  // if(!supplier) {
+  //   console.log(" Adding supplier");
+  //   supplier = await tx(writeContracts.MultiSigWallet.addSupplier(address));
+  //   const checkSupplier = await tx(writeContracts.MultiSigWallet.suppliers());
+  //   console.log(" added supplier ", supplier, checkSupplier);
+  //   console.log(" added supplier ", supplier);
+  // }
+  // if(supplier){
+    console.log(writeContracts);
     const transId = await tx(writeContracts.MultiSigWallet.submitTransaction(ipfsHash, ipfsHash, selectedAnchor, parseEther("" +invoiceAmt), paymentDate));
     console.log("transId", transId);
     // const newTrx = await tx(readContracts.MultiSigWallet.getConfirmationCount(transId.hash));
     // console.log(" newTrx ", newTrx);
-  }
+  // }
 
 }
 
@@ -125,29 +129,40 @@ const anchorMenus = (
 
         <div style={{ margin: '24px 0'}} />
         {/* { if(ipfsHash) { */}
-            <img src={`https://ipfs.io/ipfs/${ipfsHash}`} alt="" align="middle"/>
+            <img src={STORAGE_URL+`${ipfsHash}`} alt="" align="middle"/>
           {/* }
         } */}
         <Upload.Dragger name="files" action="/upload.do"
           onChange={ async (e) => {
             // e.preventDefault()
             console.log(" upload event ", e);
-            const file = e.fileList[0].originFileObj;
+            const file = e.fileList[0] && e.fileList[0].originFileObj;
             const reader = new window.FileReader()
             reader.readAsArrayBuffer(file)
-            reader.onloadend = () => {
+            reader.onloadend = async () => {
               const buff = Buffer(reader.result);
               setBuffer(buff);
               console.log('buffer', buff);
-              Ipfs.files.add(buff, (error, result) => {
-                if(error) {
-                  console.error(error)
-                  return
+              if(STORAGE==="IPFS"){
+                Ipfs.files.add(buff, (error, result) => {
+                  if(error) {
+                    console.error(error)
+                    return
+                  }
+                  console.log(" ipfs Hash ", result[0] && result[0].hash);
+                  setIpfsHash(result[0] && result[0].hash);
+                })
+              } else if (STORAGE=="FILECOIN"){
+                const response = await Slate(file)
+                if(response.decorator!=="V1_UPLOAD_TO_SLATE"){
+                  console.log("ERROR IN UPLOAD",response);
+                } else {
+                  setIpfsHash(response && response.data.cid);
+                  console.log("UPLOAD DONE:    ", response)
                 }
-                console.log(" ipfs Hash ", result[0] && result[0].hash);
-                setIpfsHash(result[0] && result[0].hash);
-              })
+                
               }
+            }
         }}
         >
         <p className="ant-upload-drag-icon">

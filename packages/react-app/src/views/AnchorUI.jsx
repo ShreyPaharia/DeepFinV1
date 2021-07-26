@@ -2,6 +2,7 @@
 
 import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther, formatUnits, parseUnits } from "@ethersproject/units";
+import {STORAGE_URL} from '../constants';
 import { Button, Card, Divider, Descriptions, Table, Tabs, Modal, Input } from "antd";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import aggrementPdf from "./PaymentAggrement.pdf";
@@ -222,7 +223,7 @@ const onCCSubmit = async() => {
       dataIndex: 'Legalcontract',
       key: 'Legalcontract',
       width: 150,
-      render:(text, record) => <a href={`https://ipfs.io/ipfs/${record.Legalcontract}`}  target="_blank">View Contract</a>,
+      render:(text, record) => <a href={STORAGE_URL+ `${record.Legalcontract}`}  target="_blank">View Contract</a>,
 
     },
     {
@@ -230,7 +231,7 @@ const onCCSubmit = async() => {
       dataIndex: 'Invoice',
       key: 'Invoice',
       width: 150,
-      render:(text, record) => <a href={`https://ipfs.io/ipfs/${record.Invoice}`}  target="_blank">View Invoice</a>,
+      render:(text, record) => <a href={STORAGE_URL+`${record.Invoice}`}  target="_blank">View Invoice</a>,
     }
   ];
 
