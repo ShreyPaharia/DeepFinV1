@@ -16,8 +16,6 @@ contract SuperDepositToken is
 
     // string public name = "Deposit Tokens";
     // string public symbol = "dToken";
-    uint256 public lastTokenId;
-    address public owner;
     mapping (address => DepositMetaData) public depositMetaData;
 
     function initialize(string calldata name, string calldata symbol, uint256 initialSupply)
@@ -42,14 +40,11 @@ contract SuperDepositToken is
     function initializeNewPool(
         uint256 _amount,
         address _UNDERLYING_ANCHOR_ADDRESS,
-        address _RESERVE_TREASURY_ADDRESS,
-        address _UNDERLYING_ASSET_ADDRESS//,
+        address _RESERVE_TREASURY_ADDRESS
         // ILendingPool _POOL
 
     ) public returns(bool){
-        lastTokenId++;
         DepositMetaData memory lastTokenMetaData = DepositMetaData(_amount,_UNDERLYING_ANCHOR_ADDRESS,_RESERVE_TREASURY_ADDRESS);
-        depositMetaData[_UNDERLYING_ASSET_ADDRESS] = lastTokenMetaData;
         return true;
     }
 
