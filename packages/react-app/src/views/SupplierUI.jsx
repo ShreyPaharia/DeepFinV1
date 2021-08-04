@@ -2,7 +2,7 @@
 
 import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
+import { Card, Button, Modal, DatePicker, Divider, Input, Popconfirm, Progress, Slider, Spin, Switch, AutoComplete, Space, Select, Radio, Form, Menu, Dropdown, Upload } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, DownOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from "react";
 import {Ipfs, Slate} from "../helpers"
@@ -39,6 +39,7 @@ export default function SupplierUI({
   const [paymentDate, setPaymentDate] = useState(0);
   const [anchor, setAnchor] = useState("Select Anchor from the list");
   const [invoiceAmt, setInvoiceAmt] = useState("");
+  const [ethPrice, setEthPrice] = useState("");
   const [ipfsHash, setIpfsHash] = useState("");
   const [buffer, setBuffer] = useState();
   const [visible, setVisible] = useState(false);
@@ -188,6 +189,8 @@ const anchorMenus = (
         <Divider />
         <Button  type="primary"
             onClick={async () => {
+              const price = await tx(readContracts.PriceConsumerV3.ethPrice());
+              setEthPrice(price);
               setVisible(true);
             }}
           >
@@ -213,6 +216,12 @@ const anchorMenus = (
                 <Page key={`page_${index + 1}`} pageNumber={index + 1} />
               ))}
             </Document>
+
+            <Card title="Invoice Amount" bordered={false} style={{ width: 300 }}>
+              <p>$ {invoiceAmt}</p>
+              <p>ETH {invoiceAmt/ethPrice}</p>
+
+            </Card>
           </Modal>
         <Divider />
 {/* 
