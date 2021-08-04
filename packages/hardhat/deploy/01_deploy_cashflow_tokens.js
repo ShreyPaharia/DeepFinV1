@@ -26,8 +26,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
       });
 
       const multiSigWallet = await ethers.getContract("MultiSigWallet", deployer);
-      await multiSigWallet.addSupplier(supplier1);
-      await multiSigWallet.addSupplier(supplier2);
+      // await multiSigWallet.addSupplier(supplier1);
+      // await multiSigWallet.addSupplier(supplier2);
 
       await deploy("MultiSigWalletFactory", {
         from: deployer,
@@ -41,7 +41,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         log: true,
       });
 
-      await usdc.transfer(anchor,'5000000000000000000000')
+      // await usdc.transfer(anchor,'5000000000000000000000')
 
       
       console.log("Deployer: ",deployer)
