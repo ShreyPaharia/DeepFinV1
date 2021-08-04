@@ -14,7 +14,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         "5000000000000000000000"
     )
 
-    console.log(SuperDepositToken.balanceOf(SuperDepositToken.address))
+    console.log(SuperDepositToken)
 }
 
 module.exports.tags = ["SuperDepositToken"];
