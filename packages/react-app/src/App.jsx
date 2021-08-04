@@ -24,7 +24,7 @@ import {
 } from "./hooks";
 import AuthService from "./authServices/auth.service";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, SupplierUI, AnchorUI, LoginUI, RegisterUI, HistoryUI, HomeUI } from "./views";
+import { ExampleUI, Hints, Subgraph, SupplierUI, AnchorUI, LoginUI, RegisterUI, HistoryUI, HomeUI, DepositUI } from "./views";
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -60,7 +60,7 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
 const scaffoldEthProvider = new StaticJsonRpcProvider("https://matic-mumbai.chainstacklabs.com");
-const mainnetInfura = new StaticJsonRpcProvider("https://rpc-mumbai.matic.today");
+const mainnetInfura = new StaticJsonRpcProvider("https://matic-mumbai.chainstacklabs.com");
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -172,41 +172,41 @@ function App(props) {
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetDAIContract
-    ) {
-      // console.log(" ******** readContracts ", readContracts);
-      // console.log(" *********** writeContracts ", writeContracts);
-      // console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      // console.log("🌎 mainnetProvider", mainnetProvider);
-      // console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      // console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      // console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
-      // console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
-      // console.log("📝 readContracts", readContracts);
-      // console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
-      // console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetDAIContract,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     DEBUG &&
+  //     mainnetProvider &&
+  //     address &&
+  //     selectedChainId &&
+  //     yourLocalBalance &&
+  //     yourMainnetBalance &&
+  //     readContracts &&
+  //     writeContracts &&
+  //     mainnetDAIContract
+  //   ) {
+  //     console.log(" ******** readContracts ", readContracts);
+  //     console.log(" *********** writeContracts ", writeContracts);
+  //     console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
+  //     console.log("🌎 mainnetProvider", mainnetProvider);
+  //     console.log("🏠 localChainId", localChainId);
+  //     console.log("👩‍💼 selected address:", address);
+  //     console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
+  //     console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
+  //     console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
+  //     console.log("📝 readContracts", readContracts);
+  //     console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
+  //     console.log("🔐 writeContracts", writeContracts);
+  //   }
+  // }, [
+  //   mainnetProvider,
+  //   address,
+  //   selectedChainId,
+  //   yourLocalBalance,
+  //   yourMainnetBalance,
+  //   readContracts,
+  //   writeContracts,
+  //   mainnetDAIContract,
+  // ]);
 
 
   let networkDisplay = "";
@@ -428,6 +428,16 @@ function App(props) {
               History
             </Link>
           </Menu.Item>
+          <Menu.Item key="/depositui">
+            <Link
+              onClick={() => {
+                setRoute("/depositui");
+              }}
+              to="/depositui"
+            >
+              Deposit
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/subgraph">
             <Link
               onClick={() => {
@@ -573,6 +583,22 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               loginUser={loginUser}
+            />
+          </Route>
+
+          <Route path="/depositui">
+            <DepositUI
+              name="CashflowTokens"
+              mmAddress={address}
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              address={address}
+              blockExplorer={blockExplorer}
+              // cashflowContract={cashflowContract}
+              // setCashflowEvents={setCashflowEvents}
             />
           </Route>
           {/* <Route path="/registerui">
