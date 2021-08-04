@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import { IERC20, ILendingPool, IProtocolDataProvider, IStableDebtToken } from './Interfaces.sol';
 import { SafeERC20 } from './Libraries.sol';
-import { IDepositToken} from './DepositToken.sol';
 import {CashflowTokens} from '../CashflowTokens.sol';
 import {ERC1155Holder} from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
