@@ -196,18 +196,19 @@ module.exports = {
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
+      "mumbai": "0x64bdCD3513388D93431F7D4ff429553bb173D0b2"
     },
     anchor: {
       default:1,
-      "mumbai": "0x5cC377D9c84136E708C612b00a2617DF635f83ae"
+      "mumbai": "0x3aC9dD168e7Faf91211097E55116008Ce2c222f5"
     },
     supplier1: {
       default:2,
-      "mumbai": "0x5cC377D9c84136E708C612b00a2617DF635f83ae"
+      "mumbai": "0x0335A004cE7d7C79e2c85f0e199fd1255d6127AB"
     },
     supplier2: {
       default:3,
-      "mumbai": "0x825aE6fb177186e9551ab1CDd6D4aB10B22A0Dba"
+      "mumbai": "0xBA6A103AF8E734250601737672B1202340333B39"
     },
   },
 };
