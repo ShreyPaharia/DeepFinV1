@@ -1,10 +1,13 @@
-import { Card, Button, Table } from "antd";
+import { Card, Button, Table, Input } from "antd";
 import React, { useMemo, useState, useCallback } from "react";
 import { formatEther, parseEther, formatUnits, parseUnits } from "@ethersproject/units";
+
 import { useContractExistsAtAddress, useContractLoader, useBalance } from "../hooks";
 import Account from "../components/Account";
 import { useEffect } from "react";
+import {Graph} from "../helpers"
 const axios = require('axios');
+
 
 const noContractDisplay = (
   <div>
@@ -33,6 +36,9 @@ export default function HomeUI({
   const [ cfTrans, setCfTrans] = useState([]);
   const [ totalCFAmt, setTotalCFAmt] = useState([]);
   const [ usdBalance, setUsdBalance] = useState([]);
+  const [ amount, setAmount] = useState([]);
+  const [ aaveRate, setAaveRate] = useState([]);
+
   const contracts = useContractLoader(provider, { chainId });
   let contract;
   if (!customContract) {
@@ -86,14 +92,28 @@ export default function HomeUI({
       width: 150,
     },
     {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 150,
+    render: () => <Input addonBefore="$"
+      placeholder="Amount"
+      autoComplete="off"
+      onChange={e => {
+        setAmount(e.target.value);
+          }}
+        />
+    },
+    
+    {
       title: 'Deposit',
       key: 'operation1',
       fixed: 'right',
       width: 100,
       render: (text, record) => <Button onClick={ async ()=>{
-        const transId = await tx(writeContracts.USDC.approve(writeContracts.LendingPoolDF.address, parseEther("100")));
+        const transId = await tx(writeContracts.USDC.approve(writeContracts.LendingPoolDF.address, parseEther(amount)));
 
-        console.log(" Deposit Called");
+        console.log(" Deposit Called", record);
       }} >Deposit</Button>,
   },
     // {
@@ -119,6 +139,7 @@ export default function HomeUI({
         fixed: 'right',
         width: 100,
         render: (text, record) => <Button onClick={ async ()=>{
+          console.log("Withdraw: ", amount);
           console.log(" Withdraw ", record);
           // cashflow token tranfer
 
@@ -150,21 +171,7 @@ export default function HomeUI({
   //     }
   //   }
 
-  //   console.log("------Token Log Starts-----")
-  //   console.log("Total Tokens: "+(lastTokenId))
-  //   console.log("Total Token Balances:-");
-  //   console.log(tokenList)
-  //   this.setState({ loading: false })
-  // }
 
-  // string public name = "Cashflow Tokens";
-  // string public symbol = "cToken";
-  // uint256 public lastTokenId;
-  // USDC public usdcToken;
-  // address public owner;
-  // mapping (uint256 => uint256) public totalSupply;
-  // mapping (uint256 => bool) public isRepaid;
-  // mapping (uint256 => TokenMetaData) public tokenMetaData;
   const displayLogs = async (contract) => {
 
     const getField = async (contract, field, ...params) => {
@@ -172,53 +179,32 @@ export default function HomeUI({
 
     }
     let balance =  null;
-    if(name == "CashflowTokens"){
       // if()
         try{
-        //   const result = await contract.getAllTransactions();
-        //   // console.log("*******mmAddress",mmAddress)
-        //   // console.log("*********account", account)
-        //   const resultBal = await contract.getAllBalances(mmAddress);
-        //   const resultBalEther = resultBal.map(x=>formatEther(x.toString()));
-
-          // console.log(" *********result ", result);
-          // console.log(" *********result balance", resultBalEther)
           const tempArr = [];
           let totalCFToken = 0;
-        //   result.forEach( (item, idx) => {
-        //     // if(!item['isRepaid'] && item['totalSupply'].toNumber()>0){
-        //       if(idx!=0 && resultBalEther[idx]>0){
-        //       // totalCFToken+=formatEther(['totalSupply'].toString());
-        //       // console.log("******repaid => "+item['isRepaid'])
-        //       tempArr.push({
-        //         key: idx,
-        //         Supplier: item['supplier'].substr(0, 6),
-        //         status: item["status"],
-        //         BalanceAmt: resultBalEther[idx],
-        //         isRepaid: item['isRepaid']?"Yes":"No",
-        //       })
-        //     }
-        //     // }
-        //   })
-            // console.log("USDC address:",contracts.USDC.address);
+
+            const graphOut = await Graph(api,query);
+            const liquidityRate = graphOut.data.reserves[0].liquidityRate;
+            console.log("Liquidity Rate:", liquidityRate)
+
+            const aRate= liquidityRate/(10**25)
+            console.log("Aave Rate %:",aRate)
             tempArr.push({
                 key:"USDC",
                 address:contracts.USDC.address,
-                aaveRate:"1",
-                rate:"2",
+                aaveRate:aRate.toFixed(4),
+                rate:(aRate+1).toFixed(4),
                 deposited:"100",
             })
+          setAaveRate(aRate);
           setCfTrans(tempArr);
           setTotalCFAmt(totalCFToken);
 
         } catch(err){
           console.log(" ERROR ", err);
         }
-    } else if ( name =="USDC"){
-          const res = contract.balanceOf && await contract.balanceOf(address)
-          setUsdBalance(res && res.toNumber());
-          console.log(" USDC Total ", res && res.toNumber());
-    }
+   
   }
 
   useEffect(()=>{
@@ -286,6 +272,19 @@ export default function HomeUI({
   //     // />
   //   );
   // });
+  const api = "https://api.thegraph.com/subgraphs/name/aave/protocol-v2";
+  const query = `
+query {
+  reserves (where:{symbol:"USDC"}){
+    symbol
+    name
+  	underlyingAsset
+    liquidityRate
+  }
+  
+}
+
+  `
    const cashFlowTable =  <Table
                             columns={columns}
                             dataSource={cfTrans}
@@ -300,7 +299,7 @@ export default function HomeUI({
       <Card
         title={
           <div>
-            {name}
+            {"Pools"}
             <div style={{ float: "right" }}>
               <Account
                 address={address}
