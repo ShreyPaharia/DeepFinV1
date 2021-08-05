@@ -149,11 +149,11 @@ function App(props) {
   // ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "CashflowTokens", "balanceOf");
+  const purpose = 0//useContractReader(readContracts, "CashflowTokens", "balanceOf");
 
   
   // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "CashflowTokens", "SetPurpose", localProvider, 1);
+  // const setPurposeEvents = useEventListener(readContracts, "CashflowTokens", "SetPurpose", localProvider, 1);
 
   // const cashflowContract = useContractReader(readContracts, "CashflowTokens", "balanceOf");
   // const setCashflowEvents = useEventListener(readContracts, "CashflowTokens", "SetCashflow", localProvider, 1);
@@ -615,15 +615,15 @@ function App(props) {
               readContracts={readContracts}
             />
           </Route> */}
-          <Route path="/hints">
+          {/* <Route path="/hints">
             <Hints
               address={address}
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
             />
-          </Route>
-          <Route path="/exampleui">
+          </Route> */}
+          {/* <Route path="/exampleui">
             <ExampleUI
               address={address}
               userProvider={userProvider}
@@ -637,7 +637,7 @@ function App(props) {
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
             />
-          </Route>
+          </Route> */}
           <Route path="/subgraph">
             <Subgraph
               subgraphUri={props.subgraphUri}
