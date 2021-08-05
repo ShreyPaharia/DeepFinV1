@@ -14,38 +14,65 @@ contract SuperDepositToken is
     CustomSuperTokenProxyBase
     {
 
-    // string public name = "Deposit Tokens";
-    // string public symbol = "dToken";
-    mapping (address => DepositMetaData) public depositMetaData;
+    // owner/deployer
+    address public owner;
 
-    function initialize(string calldata name, string calldata symbol, uint256 initialSupply)
+    constructor() {
+        owner = msg.sender;
+    }
+
+    // allow only to initialize once
+    bool isInitialized;
+    // LendingPoolDF
+    address lendingPoolDF;
+
+    function initialize(string calldata _name, string calldata _symbol, uint256 initialSupply)
         external override
     {
+        require(isInitialized == false, "Already Initialized");
+        require(msg.sender == owner, "Only Owner");
+
         ISuperToken(address(this)).initialize(
             IERC20(address(0)), // no underlying/wrapped token
             18, // shouldn't matter if there's no wrapped token
-            name,
-            symbol
+            _name,
+            _symbol
         );
-        ISuperToken(address(this)).selfMint(msg.sender, initialSupply, new bytes(0));
+
+        isInitialized = true;
     }
 
-    struct DepositMetaData {
-        uint256  totalSupply;
-        address  UNDERLYING_ANCHOR_ADDRESS;
-        address  RESERVE_TREASURY_ADDRESS;
-        // ILendingPool  POOL;
+    function setLendingPoolDF(address lpdf) external {
+        require(isInitialized, "Not Initialized");
+        require(msg.sender == owner, "Only Owner");
+
+        lendingPoolDF = lpdf;
     }
 
-    function initializeNewPool(
-        uint256 _amount,
-        address _UNDERLYING_ANCHOR_ADDRESS,
-        address _RESERVE_TREASURY_ADDRESS
-        // ILendingPool _POOL
+    function name() external view returns (string memory) {
+        return ISuperToken(address(this)).name();
+    }
 
-    ) public returns(bool){
-        DepositMetaData memory lastTokenMetaData = DepositMetaData(_amount,_UNDERLYING_ANCHOR_ADDRESS,_RESERVE_TREASURY_ADDRESS);
-        return true;
+    function symbol() external view returns (string memory) {
+        return ISuperToken(address(this)).symbol();
+    }
+
+    function decimals() external view returns (uint8) {
+        return ISuperToken(address(this)).decimals();
+    }
+
+    function mint(address account, uint256 amount) external {
+        require(isInitialized, "Not Initialized");
+        require(msg.sender == lendingPoolDF, "Only LendingPoolDF");
+
+        ISuperToken(address(this)).selfMint(account, amount, new bytes(0));
+    }
+
+    function burn(address account, uint256 amount) external {
+        require(isInitialized, "Not Initialized");
+        require(msg.sender == lendingPoolDF, "Only LendingPoolDF");
+
+        ISuperToken(address(this)).selfBurn(account, amount, new bytes(0));
     }
 
 }
