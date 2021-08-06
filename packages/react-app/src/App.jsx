@@ -1,5 +1,6 @@
 import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
+import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, Menu, Row, notification } from "antd";
 import "antd/dist/antd.css";
@@ -77,7 +78,7 @@ const blockExplorer = targetNetwork.blockExplorer;
   Web3 modal helps us "connect" external wallets:
 */
 const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
+  network: {chainId: 8001, nodeUrl:"https://matic-mumbai.chainstacklabs.com" }, // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
@@ -86,6 +87,12 @@ const web3Modal = new Web3Modal({
         infuraId: INFURA_ID,
       },
     },
+    portis: {
+      package: Portis, // required
+      options: {
+        id: "baf845c0-7334-4c4a-8f3c-c1f09023ff1a", // required
+      }
+    }
   },
 });
 
