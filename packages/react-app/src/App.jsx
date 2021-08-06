@@ -10,7 +10,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { UserAccount, Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { ERC20ABI, INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -78,7 +78,7 @@ const blockExplorer = targetNetwork.blockExplorer;
   Web3 modal helps us "connect" external wallets:
 */
 const web3Modal = new Web3Modal({
-  network: {chainId: 8001, nodeUrl:"https://matic-mumbai.chainstacklabs.com" }, // optional
+  network: {chainId: 80001, nodeUrl:"https://matic-mumbai.chainstacklabs.com" }, // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
@@ -140,10 +140,14 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider);
 
+  // const writeExternalContracts = useContractLoader(injectedProvider, { chainId: 80001,
+  //   externalContracts: ERC20ContractMetadata,
+  // });
+
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI);
+  const mumbaiUSDCContract = useExternalContractLoader(mainnetProvider, "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e", ERC20ABI);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -604,6 +608,7 @@ function App(props) {
               readContracts={readContracts}
               address={address}
               blockExplorer={blockExplorer}
+              mumbaiUSDCContract={mumbaiUSDCContract}
               // cashflowContract={cashflowContract}
               // setCashflowEvents={setCashflowEvents}
             />

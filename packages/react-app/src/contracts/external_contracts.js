@@ -786,14 +786,18 @@ const DAIABI = [
 
 // Mainnet DAI, Optimism and Arbitrium Rollup Contracts with local addresses
 module.exports = {
-  1: {
+  80001: {
     contracts: {
-      DAI: {
-        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        abi: DAIABI,
-      },
-      UNI: {
-        address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      // DAI: {
+      //   address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      //   abi: DAIABI,
+      // },
+      // UNI: {
+      //   address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      //   abi: ERC20ABI,
+      // },
+      mumbaiUSDC : {
+        address: "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e",
         abi: ERC20ABI,
       },
     },
