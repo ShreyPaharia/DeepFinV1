@@ -34,13 +34,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         log: true,
       });
 
-
-      await deploy("LendingPoolDF", {
-        from: deployer,
-        args: [cashflowTokens.address],
-        log: true,
-      });
-
       await usdc.transfer(anchor,'5000000000000000000000')
 
       
