@@ -14,6 +14,8 @@ import { SafeERC20 } from './Libraries.sol';
 
 import {CashflowTokens} from '../CashflowTokens.sol';
 import {ERC1155Holder} from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import {IERC777Recipient} from '@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol';
+import {IERC777Sender} from '@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol';
 
 import {
     ISuperToken,
@@ -45,11 +47,12 @@ interface ISDT is ISuperToken {
  * See @dev comments
  */
  
-contract LendingPoolDF is ERC1155Holder, SuperAppBase {
+contract LendingPoolDF is ERC1155Holder, SuperAppBase, IERC777Recipient,IERC777Sender {
     using SafeERC20 for IERC20;
 
     string name = "Deep Fin Lending Pool";
-    uint256 RAY = 10**27;
+    uint256 RAY1 = 10**12;
+    uint256 RAY2 = 10**15;
 
     mapping (address => uint256) deposited;
 
@@ -99,10 +102,10 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase {
 
         deposited[msg.sender] += amount;
 
-        SDT.mint(msg.sender, amount);
+        SDT.mint(msg.sender, amount*RAY1);
 
         (, , , uint256 liquidityRate, , , , , , ) = DataProvider.getReserveData(asset);
-        uint256 APY = liquidityRate / RAY ;
+        uint256 APY = liquidityRate / RAY1 ;
 
         // 1 year = 31536000 seconds
         // flow per second = (APY/31536000)*amount (divdide before multiply, solidity truncate)
@@ -111,12 +114,12 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase {
         // incase if interest rate fluctuate heavily
         // if unused until stream ends, it will stay in this contract
 
-        SDT.mint(address(this), APY*10*amount);
+        SDT.mint(address(this), APY*10*amount*RAY1);
 
         bytes memory ctx = CFA.createFlow(
                             ISuperToken(SDT),
                             msg.sender,
-                            int96(int(APY/31536000)*int(amount)),
+                            int96(int(APY/31536000)*int((amount*RAY1)/RAY2)),
                             new bytes(0)
                         );
 
@@ -132,10 +135,12 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase {
         // withdraw whole amount,
         // change later to withdraw partial
         require(deposited[msg.sender] > 0, "No deposits");
-        SDT.burn(msg.sender, deposited[msg.sender]);
+        SDT.burn(msg.sender, deposited[msg.sender]*RAY1);
+        uint256 usdcDeposited = deposited[msg.sender];
+        deposited[msg.sender] = 0;
+        lendingPool.withdraw(address(USDC), usdcDeposited, msg.sender);
 
-        lendingPool.withdraw(address(USDC), deposited[msg.sender], msg.sender);
-
+        
         bytes memory ctx2 = CFA.deleteFlow(
                             ISuperToken(SDT),
                             address(this),
