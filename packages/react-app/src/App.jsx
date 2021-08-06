@@ -10,7 +10,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { UserAccount, Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { ERC20ABI, INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -147,7 +147,7 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mumbaiUSDCContract = useExternalContractLoader(mainnetProvider, "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e", ERC20ABI);
+  // const mumbaiUSDCContract = useExternalContractLoader(mainnetProvider, "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e", ERC20ABI);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -608,7 +608,6 @@ function App(props) {
               readContracts={readContracts}
               address={address}
               blockExplorer={blockExplorer}
-              mumbaiUSDCContract={mumbaiUSDCContract}
               // cashflowContract={cashflowContract}
               // setCashflowEvents={setCashflowEvents}
             />
