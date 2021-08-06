@@ -44,7 +44,7 @@ contract SuperDepositToken is
 
     function setLendingPoolDF(address lpdf) external {
         require(isInitialized, "Not Initialized");
-        require(msg.sender == owner, "Only Owner");
+        require(msg.sender == owner || msg.sender == lendingPoolDF, "Only Owner");
 
         lendingPoolDF = lpdf;
     }

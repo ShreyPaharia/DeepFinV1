@@ -1,15 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+pragma abicoder v2;
 
-import { IERC20, ILendingPool, IProtocolDataProvider, IStableDebtToken } from './Interfaces.sol';
+import { 
+    IERC20,
+    ILendingPool,
+    IProtocolDataProvider,
+    IStableDebtToken,
+    IAToken 
+} from './Interfaces.sol';
+
 import { SafeERC20 } from './Libraries.sol';
+
 import {CashflowTokens} from '../CashflowTokens.sol';
 import {ERC1155Holder} from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 import {
-    ISuperfluid,
     ISuperToken,
-    ISuperAgreement,
+    ISuperfluid,
     SuperAppDefinitions
 } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 
@@ -37,22 +45,39 @@ interface ISDT is ISuperToken {
  * See @dev comments
  */
  
-contract LendingPoolDF is ERC1155Holder, SuperAppBase{
+contract LendingPoolDF is ERC1155Holder, SuperAppBase {
     using SafeERC20 for IERC20;
-    
-    ILendingPool constant lendingPool = ILendingPool(address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9)); // Kovan
-    IProtocolDataProvider constant dataProvider = IProtocolDataProvider(address(0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d)); // Kovan
 
-    CashflowTokens cashflowTokens;
+    string name = "Deep Fin Lending Pool";
+    uint256 RAY = 10**27;
+
+    mapping (address => uint256) deposited;
+
+    /* aave & superfluid mumbai addresses */
+
+    address USDC = 0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e;  // ERC20 USDC
+    address sUSDC = 0x83A7bC369cFd55D9F00267318b6D221fb9Fa739F; // stable debt USDC token
+    address aUSDC = 0x2271e3Fef9e15046d09E1d78a8FF038c691E9Cf9; // aave interest bearing USDC
+
+    ILendingPool lendingPool = ILendingPool(0x9198F13B08E299d85E096929fA9781A1E3d5d827);
+    IProtocolDataProvider DataProvider = IProtocolDataProvider(0xFA3bD19110d986c5e5E9DD5F69362d05035D045B);
+
+    IConstantFlowAgreementV1 CFA = IConstantFlowAgreementV1(0x49e565Ed1bdc17F3d220f72DF0857C26FA83F873);
+    ISuperfluid host = ISuperfluid(0xEB796bdb90fFA0f28255275e16936D25d3418603);
+
+    /* address to get from constructor */
+
     ISDT SDT; // super deposit token
-    
+    CashflowTokens cashflowTokens;
     address owner;
-    string name="Deep Fin Lending Pool";
 
     constructor (address _cashflowTokens, address _SDT) {
         owner = msg.sender;
         cashflowTokens = CashflowTokens(_cashflowTokens);
         SDT = ISDT(_SDT);
+
+        uint256 configWord = SuperAppDefinitions.APP_LEVEL_FINAL;
+        host.registerApp(configWord);
     }
 
     /**
@@ -72,41 +97,76 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase{
         IERC20(asset).safeApprove(address(lendingPool), amount);
         lendingPool.deposit(asset, amount, address(this), 0);
 
+        deposited[msg.sender] += amount;
+
         SDT.mint(msg.sender, amount);
+
+        (, , , uint256 liquidityRate, , , , , , ) = DataProvider.getReserveData(asset);
+        uint256 APY = liquidityRate / RAY ;
+
+        // 1 year = 31536000 seconds
+        // flow per second = (APY/31536000)*amount (divdide before multiply, solidity truncate)
+
+        // mint 10 years worth of interest equivalent of super tokens extra,
+        // incase if interest rate fluctuate heavily
+        // if unused until stream ends, it will stay in this contract
+
+        SDT.mint(address(this), APY*10*amount);
+
+        bytes memory ctx = CFA.createFlow(
+                            ISuperToken(SDT),
+                            msg.sender,
+                            int96(int(APY/31536000)*int(amount)),
+                            new bytes(0)
+                        );
+
     }
 
     /**
      * Withdraw all of a collateral as the underlying asset, if no outstanding loans delegated
-     * @param asset The underlying asset to withdraw
      * 
      * Add permissions to this call, e.g. only the owner should be able to withdraw the collateral!
      */
-    function withdrawCollateral(address asset, uint256 amount) public {
-        SDT.burn(msg.sender, amount);
+    function withdrawCollateral() public {
 
-        (address aTokenAddress,,) = dataProvider.getReserveTokensAddresses(asset);
-        uint256 assetBalance = IERC20(aTokenAddress).balanceOf(address(this));
+        // withdraw whole amount,
+        // change later to withdraw partial
+        require(deposited[msg.sender] > 0, "No deposits");
+        SDT.burn(msg.sender, deposited[msg.sender]);
 
-        lendingPool.withdraw(asset, assetBalance, owner);
+        lendingPool.withdraw(address(USDC), deposited[msg.sender], msg.sender);
+
+        bytes memory ctx2 = CFA.deleteFlow(
+                            ISuperToken(SDT),
+                            address(this),
+                            msg.sender,
+                            new bytes(0)
+                        );
+
     }
 
     /**
      * Approves the borrower to take an uncollaterised loan
      * @param borrower The borrower of the funds (i.e. delgatee)
      * @param amount The amount the borrower is allowed to borrow (i.e. their line of credit)
-     * @param asset The asset they are allowed to borrow
      * 
      * Add permissions to this call, e.g. only the owner should be able to approve borrowers!
      */
-    function approveBorrower(address borrower, uint256 amount, address asset, uint256 tokenId) public {
-        (, address stableDebtTokenAddress,) = dataProvider.getReserveTokensAddresses(asset);
-        //Transfer cashflow tokens 
-        cashflowTokens.safeTransferFrom(msg.sender, address(this), tokenId, amount, "Abc");
+    function approveBorrower(address borrower, uint256 amount, uint256 tokenId) public {
 
-        //Modify the amount to charge fees
+        // transfer cashflow tokens (i.e lock)
+        cashflowTokens.safeTransferFrom(
+            msg.sender,
+            address(this),
+            tokenId,
+            amount,
+            new bytes(0)
+        );
+
+        // modify the amount to charge fees
         uint256 loanAmount = (amount*9)/10;
 
-        IStableDebtToken(stableDebtTokenAddress).approveDelegation(borrower, loanAmount);
+        IStableDebtToken(sUSDC).approveDelegation(borrower, loanAmount);
     }
     
     /**
@@ -119,99 +179,11 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase{
      * You should keep internal accounting of borrowers, if your contract will have multiple borrowers
      */
     function repayBorrower(uint256 amount, address asset) public {
+
         IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
         IERC20(asset).safeApprove(address(lendingPool), amount);
+
         lendingPool.repay(asset, amount, 1, address(this));
     }
 
-    function beforeAgreementCreated(
-        ISuperToken /*superToken*/,
-        address /*agreementClass*/,
-        bytes32 /*agreementId*/,
-        bytes calldata /*agreementData*/,
-        bytes calldata /*ctx*/
-    )
-        external
-        view
-        virtual
-        override
-        returns (bytes memory /*cbdata*/)
-    {
-        revert("Unsupported callback - Before Agreement Created");
-    }
-
-    function afterAgreementCreated(
-        ISuperToken /*superToken*/,
-        address /*agreementClass*/,
-        bytes32 /*agreementId*/,
-        bytes calldata /*agreementData*/,
-        bytes calldata /*cbdata*/,
-        bytes calldata /*ctx*/
-    )
-        external
-        override
-        returns (bytes memory /*newCtx*/)
-    {
-        revert("Unsupported callback - After Agreement Created");
-    }
-
-    function beforeAgreementUpdated(
-        ISuperToken /*superToken*/,
-        address /*agreementClass*/,
-        bytes32 /*agreementId*/,
-        bytes calldata /*agreementData*/,
-        bytes calldata /*ctx*/
-    )
-        external
-        view
-        override
-        returns (bytes memory /*cbdata*/)
-    {
-        revert("Unsupported callback - Before Agreement updated");
-    }
-
-    function afterAgreementUpdated(
-        ISuperToken /*superToken*/,
-        address /*agreementClass*/,
-        bytes32 /*agreementId*/,
-        bytes calldata /*agreementData*/,
-        bytes calldata /*cbdata*/,
-        bytes calldata /*ctx*/
-    )
-        external
-        override
-        returns (bytes memory /*newCtx*/)
-    {
-        revert("Unsupported callback - After Agreement Updated");
-    }
-
-    function beforeAgreementTerminated(
-        ISuperToken /*superToken*/,
-        address /*agreementClass*/,
-        bytes32 /*agreementId*/,
-        bytes calldata /*agreementData*/,
-        bytes calldata /*ctx*/
-    )
-        external
-        view
-        override
-        returns (bytes memory /*cbdata*/)
-    {
-        revert("Unsupported callback -  Before Agreement Terminated");
-    }
-
-    function afterAgreementTerminated(
-        ISuperToken /*superToken*/,
-        address /*agreementClass*/,
-        bytes32 /*agreementId*/,
-        bytes calldata /*agreementData*/,
-        bytes calldata /*cbdata*/,
-        bytes calldata /*ctx*/
-    )
-        external
-        override
-        returns (bytes memory /*newCtx*/)
-    {
-        revert("Unsupported callback - After Agreement Terminated");
-    }
 }
