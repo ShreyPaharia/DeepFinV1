@@ -7,6 +7,7 @@ import {
 }
 from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/CustomSuperTokenProxyBase.sol";
 import { INativeSuperTokenCustom } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/INativeSuperToken.sol";
+
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract SuperDepositToken is 
@@ -39,38 +40,30 @@ contract SuperDepositToken is
             _symbol
         );
 
+        if(initialSupply > 0) {
+            ISuperToken(address(this)).selfMint(msg.sender, initialSupply, new bytes(0));
+        }
+
         isInitialized = true;
     }
 
     function setLendingPoolDF(address lpdf) external {
         require(isInitialized, "Not Initialized");
-        require(msg.sender == owner || msg.sender == lendingPoolDF, "Only Owner");
+        require(msg.sender == owner || msg.sender == lendingPoolDF, "Only LendingPoolDF/Owner");
 
         lendingPoolDF = lpdf;
     }
 
-    function name() external view returns (string memory) {
-        return ISuperToken(address(this)).name();
-    }
-
-    function symbol() external view returns (string memory) {
-        return ISuperToken(address(this)).symbol();
-    }
-
-    function decimals() external view returns (uint8) {
-        return ISuperToken(address(this)).decimals();
-    }
-
     function mint(address account, uint256 amount) external {
         require(isInitialized, "Not Initialized");
-        require(msg.sender == lendingPoolDF, "Only LendingPoolDF");
+        require(msg.sender == owner || msg.sender == lendingPoolDF, "Only LendingPoolDF/Owner");
 
         ISuperToken(address(this)).selfMint(account, amount, new bytes(0));
     }
 
     function burn(address account, uint256 amount) external {
         require(isInitialized, "Not Initialized");
-        require(msg.sender == lendingPoolDF, "Only LendingPoolDF");
+        require(msg.sender == owner || msg.sender == lendingPoolDF, "Only LendingPoolDF/Owner");
 
         ISuperToken(address(this)).selfBurn(account, amount, new bytes(0));
     }
