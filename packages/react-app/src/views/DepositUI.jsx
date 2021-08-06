@@ -111,9 +111,11 @@ export default function DepositUI({
       fixed: 'right',
       width: 100,
       render: (text, record) => <Button onClick={ async ()=>{
-        const transId = await tx(writeContracts.USDC.approve(writeContracts.LendingPoolDF.address, parseEther(amount)));
-
-        console.log(" Deposit Called", record);
+        const usdcMumbaiAddress = writeContracts.mumbaiUSDC.address;
+        console.log(usdcMumbaiAddress);
+        const transId = await tx(writeContracts.mumbaiUSDC.approve(writeContracts.LendingPoolDF.address, parseUnits(amount,6)));
+        const transIdNew = await tx(writeContracts.LendingPoolDF.depositCollateral(usdcMumbaiAddress,parseUnits(amount,6),true));
+        console.log(" Deposit Called for :",amount );
       }} >Deposit</Button>,
   },
     // {
