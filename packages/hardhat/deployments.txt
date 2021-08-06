@@ -1,43 +1,16 @@
-deploying "Migrations" (tx: 0x42d2398ec9ab4bf91cf61c75057f5ca4e8d04fea328a0bef633f0c20b005dd01)...: deployed at 0xA6f32285be2e9E3E7017d1C0e8Ac68540DCE20dd with 176072 gas
-deploying "USDC" (tx: 0xf7c7561e27bbcf00f90af7284d6c5bb93e2698be9d9a97667cfaace40b93ae20)...: deployed at 0x46759CD59D3646998e4170264FC950562dBCf4BE with 688861 gas
-deploying "CashflowTokens" (tx: 0x02b7ad436e07462ae86e0f75efb6a55b4b437e57c61324493f56039a7270ef5d)...: deployed at 0xe7C37D7fAa8f8d468db0E55aBfBDf18B0615CeA1 with 2249471 gas
-deploying "MultiSigWallet" (tx: 0x362c62fca7667163c77b10d161b68cb3395a030d0f8c47a8e28534724dd06ac8)...: deployed at 0xa5B7f716827b6a8cDbde03c3fe218e6B6E38DFFb with 2579745 gas
-deploying "MultiSigWalletFactory" (tx: 0x4373285e1c333ef8bcd8c11a3f978493d2d6471a88792bfa68baa42e557667ff)...: deployed at 0x2EC14b2D79a8BF0ff5778B1F79dECBB9c3a6Ddfd with 2882543 gas
-deploying "LendingPoolDF" (tx: 0x6d67dd995215a744fb252900a46965152e4ca56225515e4e67751c634ccead3c)...: deployed at 0xFfBB7A8350f7B968252e8Cf523B17ff3a44e57E9 with 928563 gas
+deploying "Migrations" (tx: 0xc54990a54a8399b9b3b02f45a08efe13b23a84e80129c3f05e64c60e2f88b065)...: deployed at 0xa9955A703D47cEAd3548b015e27262DEb3f6444E with 176072 gas
+deploying "USDC" (tx: 0x2ab7f98f591ab66cc66cd2c3587a2b5baee842bf69e4802176226e0e1881fa15)...: deployed at 0x8276C1fCa65328ECC71Ca2a816D3389557335282 with 688861 gas
+deploying "CashflowTokens" (tx: 0x04bef62d14e21ec05489cfa79dc0781e35ba5fdc3418985caf41c3a12e7dff85)...: deployed at 0xBfAB1352158F67A4762E1adF9EE9EfD5a3Df5054 with 2249471 gas
+deploying "MultiSigWallet" (tx: 0xf3146023c16eba2dcf77f490cb5d94f410c117951d6d4439807a16b9420ccd48)...: deployed at 0x0A50a04aB704aEaAa863D8a683D57762c6cbDa77 with 2579745 gas
+deploying "MultiSigWalletFactory" (tx: 0x10db27db184cd133405792ff0d2be0161ef6f484cbf2f15f76e8bb46f27604d8)...: deployed at 0xE175BAe096039547Ee431166e05581ea81ef3Eeb with 2882543 gas
 Deployer:  0x64bdCD3513388D93431F7D4ff429553bb173D0b2
 Anchor:  0x5cC377D9c84136E708C612b00a2617DF635f83ae
 Supplier:  0x5cC377D9c84136E708C612b00a2617DF635f83ae
-deploying "PriceConsumerV3" (tx: 0x7565ee817138b0810e9b3d6108aedcada5bea8b895b7cb11136bee84d5c65e71)...: deployed at 0xcc9bEa8F946729AFec77F8d91fCEf9EfB0944bA3 with 175565 gas
-ETH PRICE: 2286
-deploying "SuperDepositToken" (tx: 0x128a5b01574b51a642c166484390fda849bc1751deaeb352517c7517baf55244)...: deployed at 0xaA6Bd0Dd20483E2Bd7564a3ee0f47Fa9f39afF9D with 376961 gas
+deploying "PriceConsumerV3" (tx: 0x968d53442e38c666708036bde3c5dff9bbd4df226614b5d22bfd89c2e95e48e6)...: deployed at 0x99601133ECe00Eb6c3B14EFC0eDf706478D8A165 with 175565 gas
+ETH PRICE: 2873
+deploying "SuperDepositToken" (tx: 0x7e319cd2fd027e8cfa57cd5723d1b99c045f89ae23b7bca2e39222c6fa40d644)...: deployed at 0x7b2C0b80c9944C00D1F550c8DA5E7B177BD191f2 with 559985 gas
+deploying "LendingPoolDF" (tx: 0x5025feffc8fe5fe337ece64ed143dc9a7ef672c99edfde2ba13ec4e5a9ffc855)...: deployed at 0x80C2956A99790b1069cbc4F9b2df4d92111141d5 with 1669430 gas
+0x80C2956A99790b1069cbc4F9b2df4d92111141d5
 $ hardhat run scripts/publish.js
 ✅  Published contracts to the subgraph package.
-Done in 91.82s.
-
-========================================================================================================================================================================================
-
-verifying CashflowTokens (0xe7C37D7fAa8f8d468db0E55aBfBDf18B0615CeA1) ...
-waiting for result...
- => contract CashflowTokens is now verified
-verifying LendingPoolDF (0xFfBB7A8350f7B968252e8Cf523B17ff3a44e57E9) ...
-waiting for result...
- => contract LendingPoolDF is now verified
-verifying Migrations (0xA6f32285be2e9E3E7017d1C0e8Ac68540DCE20dd) ...
-waiting for result...
- => contract Migrations is now verified
-verifying MultiSigWallet (0xa5B7f716827b6a8cDbde03c3fe218e6B6E38DFFb) ...
-waiting for result...
- => contract MultiSigWallet is now verified
-verifying MultiSigWalletFactory (0x2EC14b2D79a8BF0ff5778B1F79dECBB9c3a6Ddfd) ...
-waiting for result...
- => contract MultiSigWalletFactory is now verified
-verifying USDC (0x46759CD59D3646998e4170264FC950562dBCf4BE) ...
-waiting for result...
- => contract USDC is now verified
-verifying PriceConsumerV3 (0xcc9bEa8F946729AFec77F8d91fCEf9EfB0944bA3) ...
-waiting for result...
- => contract PriceConsumerV3 is now verified
-verifying SuperDepositToken (0xaA6Bd0Dd20483E2Bd7564a3ee0f47Fa9f39afF9D) ...
-waiting for result...
- => contract SuperDepositToken is now verified
- 
+Done in 121.87s.
