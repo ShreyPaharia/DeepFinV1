@@ -141,9 +141,8 @@ export default function DepositUI({
         fixed: 'right',
         width: 100,
         render: (text, record) => <Button onClick={ async ()=>{
-          console.log("Withdraw: ", amount);
-          console.log(" Withdraw ", record);
           // cashflow token tranfer
+          const transIdNew = await tx(writeContracts.LendingPoolDF.withdrawCollateral());
 
           // setRecordKey(record.key);
           // setVisible(true);
