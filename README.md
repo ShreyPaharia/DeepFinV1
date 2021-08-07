@@ -4,7 +4,7 @@
 
 Architechture:
 
-![image](https://github.com/ShreyPaharia/DeepFinV1/blob/v1_ethodyssey/ChainDeepFin.png)
+![image](https://github.com/ShreyPaharia/DeepFinV1/blob/v1_ethodyssey/DeepFinChain.png)
 
 
 # Sponsor Usage 
