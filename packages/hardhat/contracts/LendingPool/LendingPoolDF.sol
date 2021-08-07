@@ -115,12 +115,24 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase, ERC777Recipient {
 
         SDT.mint(address(this), APY*10*amount*RAY1);
 
-        bytes memory ctx = CFA.createFlow(
-                            ISuperToken(SDT),
-                            msg.sender,
-                            int96(int(APY/31536000)*int((amount*RAY1)/RAY2)),
-                            new bytes(0)
-                        );
+        bytes memory returnData = host.callAgreement(
+                                    CFA,
+                                    abi.encodeWithSelector(
+                                        CFA.createFlow.selector,
+                                        SDT,
+                                        msg.sender,
+                                        int96(int(APY/31536000)*int((amount*RAY1)/RAY2)),
+                                        new bytes(0)
+                                    ),
+                                    new bytes(0)
+                                );
+
+        // bytes memory ctx = CFA.createFlow(
+        //                     ISuperToken(SDT),
+        //                     msg.sender,
+        //                     int96(int(APY/31536000)*int((amount*RAY1)/RAY2)),
+        //                     new bytes(0)
+        //                 );
 
     }
 
@@ -142,13 +154,25 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase, ERC777Recipient {
 
         lendingPool.withdraw(address(USDC), usdcDeposited, msg.sender);
 
+        bytes memory returnData = host.callAgreement(
+                                    CFA,
+                                    abi.encodeWithSelector(
+                                        CFA.deleteFlow.selector,
+                                        SDT,
+                                        address(this),
+                                        msg.sender,
+                                        new bytes(0)
+                                    ),
+                                    new bytes(0)
+                                );
+
         
-        bytes memory ctx2 = CFA.deleteFlow(
-                            ISuperToken(SDT),
-                            address(this),
-                            msg.sender,
-                            new bytes(0)
-                        );
+        // bytes memory ctx2 = CFA.deleteFlow(
+        //                     ISuperToken(SDT),
+        //                     address(this),
+        //                     msg.sender,
+        //                     new bytes(0)
+        //                 );
 
     }
 

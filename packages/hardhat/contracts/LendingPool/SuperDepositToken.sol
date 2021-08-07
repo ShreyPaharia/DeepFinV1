@@ -6,6 +6,10 @@ import {
     CustomSuperTokenProxyBase
 }
 from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/CustomSuperTokenProxyBase.sol";
+import {
+    ISuperfluidToken
+}
+from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluidToken.sol";
 import { INativeSuperTokenCustom } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/INativeSuperToken.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -26,6 +30,13 @@ contract SuperDepositToken is
     bool isInitialized;
     // LendingPoolDF
     address lendingPoolDF;
+
+    function getHost()
+       external view
+       returns(address)
+    {
+       return 0xEB796bdb90fFA0f28255275e16936D25d3418603;
+    }
 
     function initialize(string calldata _name, string calldata _symbol, uint256 initialSupply)
         external override
