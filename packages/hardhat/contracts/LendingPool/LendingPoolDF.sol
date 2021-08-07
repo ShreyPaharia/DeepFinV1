@@ -14,8 +14,7 @@ import { SafeERC20 } from './Libraries.sol';
 
 import {CashflowTokens} from '../CashflowTokens.sol';
 import {ERC1155Holder} from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
-import {IERC777Recipient} from '@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol';
-import {IERC777Sender} from '@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol';
+import {ERC777Recipient} from './ERC777Recepient.sol';
 
 import {
     ISuperToken,
@@ -47,7 +46,7 @@ interface ISDT is ISuperToken {
  * See @dev comments
  */
  
-contract LendingPoolDF is ERC1155Holder, SuperAppBase, IERC777Recipient,IERC777Sender {
+contract LendingPoolDF is ERC1155Holder, SuperAppBase, ERC777Recipient {
     using SafeERC20 for IERC20;
 
     string name = "Deep Fin Lending Pool";
@@ -74,7 +73,7 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase, IERC777Recipient,IERC777S
     CashflowTokens cashflowTokens;
     address owner;
 
-    constructor (address _cashflowTokens, address _SDT) {
+    constructor (address _cashflowTokens, address _SDT) ERC777Recipient() {
         owner = msg.sender;
         cashflowTokens = CashflowTokens(_cashflowTokens);
         SDT = ISDT(_SDT);
@@ -135,9 +134,12 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase, IERC777Recipient,IERC777S
         // withdraw whole amount,
         // change later to withdraw partial
         require(deposited[msg.sender] > 0, "No deposits");
+
         SDT.burn(msg.sender, deposited[msg.sender]*RAY1);
+
         uint256 usdcDeposited = deposited[msg.sender];
         deposited[msg.sender] = 0;
+
         lendingPool.withdraw(address(USDC), usdcDeposited, msg.sender);
 
         
@@ -189,6 +191,10 @@ contract LendingPoolDF is ERC1155Holder, SuperAppBase, IERC777Recipient,IERC777S
         IERC20(asset).safeApprove(address(lendingPool), amount);
 
         lendingPool.repay(asset, amount, 1, address(this));
+    }
+
+    function getUnderlying(address account) external view returns (uint256) {
+        return deposited[account];
     }
 
 }
