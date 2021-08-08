@@ -4,7 +4,7 @@ import {
 } from "../generated/CashflowTokens/CashflowTokens"
 import {
   TransferSingle,
-  URI
+  URI,
 } from "../generated/schema"
 
 export function handleTransferSingle(event: TransferSingleEvent): void {
@@ -14,7 +14,6 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   entity.operator = event.params.operator
   entity.from = event.params.from
   entity.to = event.params.to
-  entity.id = event.params.id
   entity.value = event.params.value
   entity.save()
 }
