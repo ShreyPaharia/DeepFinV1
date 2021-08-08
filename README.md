@@ -1,4 +1,4 @@
-<p align="center"><img src="/deepfin.jpeg" align="center" width="400"></p>
+<p align="center"><img src="/tempsnip.png" align="center" width="400"></p>
 
 <p  align="center">New way to tokenize post dated payments and unlock huge amount of money locked in large supply chains! 🚀</p>
 
