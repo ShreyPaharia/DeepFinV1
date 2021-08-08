@@ -84,3 +84,9 @@
 - LendingPoolDF: [0xB09aC2d78A7e8470E27B3ED6f834779fCb8C6A38](https://mumbai.polygonscan.com/address/0xB09aC2d78A7e8470E27B3ED6f834779fCb8C6A38)
 - SuperDepositToken: [0x9048296bFb28AaBb53f945c9ba54694D305C72FC](https://mumbai.polygonscan.com/address/0x9048296bFb28AaBb53f945c9ba54694D305C72FC)
 - CashflowToken: [0x648dfE57FFe7EB2a5461930b91B35A5eDE2aDdc2](https://mumbai.polygonscan.com/address/0x648dfE57FFe7EB2a5461930b91B35A5eDE2aDdc2)
+
+(Testing contracts)
+
+- LendingPoolDF: [0xd1773D02e065Db0d105F35D396E08D99AA58E36B](https://mumbai.polygonscan.com/address/0xd1773D02e065Db0d105F35D396E08D99AA58E36B)
+- SuperDepositToken: [0xC86AE588dBF297Fa52285FB76B117D394516ca06](https://mumbai.polygonscan.com/address/0xC86AE588dBF297Fa52285FB76B117D394516ca06)
+- CashflowToken: [0x1e69Dea883508812bDf18057637c336514c561db](https://mumbai.polygonscan.com/address/0x1e69Dea883508812bDf18057637c336514c561db)
