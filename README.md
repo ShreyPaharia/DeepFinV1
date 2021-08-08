@@ -76,6 +76,7 @@
 
 ### The Graph
 - Used to get the lending rates from corresponding Aave pools onto which tokens are transferred and credit is delegated.
+- We deoployed our graphs https://thegraph.com/legacy-explorer/subgraph/hack3r-0m/cashflow and https://thegraph.com/legacy-explorer/subgraph/hack3r-0m/cashflow to index the relevant data(mentioned in description of subgraph) to use it further in our UI to display stats, history and pending actions required from user.
   
   
 ## Polygon Deployments (Mumbai)
