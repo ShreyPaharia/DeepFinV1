@@ -81,5 +81,6 @@
   
 ## Polygon Deployments (Mumbai)
 
-- (coming soon)
-
+- LendingPoolDF: [0xB09aC2d78A7e8470E27B3ED6f834779fCb8C6A38](https://mumbai.polygonscan.com/address/0xB09aC2d78A7e8470E27B3ED6f834779fCb8C6A38)
+- SuperDepositToken: [0x9048296bFb28AaBb53f945c9ba54694D305C72FC](https://mumbai.polygonscan.com/address/0x9048296bFb28AaBb53f945c9ba54694D305C72FC)
+- CashflowToken: [0x648dfE57FFe7EB2a5461930b91B35A5eDE2aDdc2](https://mumbai.polygonscan.com/address/0x648dfE57FFe7EB2a5461930b91B35A5eDE2aDdc2)
