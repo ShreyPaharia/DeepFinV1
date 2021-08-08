@@ -10,7 +10,7 @@
 
 # Architechture:
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+![image](https://github.com/ShreyPaharia/DeepFinV1/blob/v1_ethodyssey/DeepFinChain.png)
 
 ### The Lending Pool Contract
 The lending pool contract is a combination of Superfluid super app to manage streaming of interest and AAVE credit delegation contract for taking deposits and delegating credit on Aave.	
