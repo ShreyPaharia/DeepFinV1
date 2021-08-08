@@ -1,0 +1,30 @@
+type ApprovalForAll @entity {
+  id: ID!
+  account: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+}
+
+type TransferBatch @entity {
+  id: ID!
+  operator: Bytes! # address
+  from: Bytes! # address
+  to: Bytes! # address
+  ids: [BigInt]! # uint256[]
+  values: [BigInt]! # uint256[]
+}
+
+type TransferSingle @entity {
+  id: ID!
+  operator: Bytes! # address
+  from: Bytes! # address
+  to: Bytes! # address
+  id: BigInt! # uint256
+  value: BigInt! # uint256
+}
+
+type URI @entity {
+  id: ID!
+  value: String! # string
+  id: BigInt! # uint256
+}

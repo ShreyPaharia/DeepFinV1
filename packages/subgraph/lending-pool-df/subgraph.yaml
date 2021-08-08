@@ -1,0 +1,23 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: LendingPoolDF
+    network: mumbai
+    source:
+      address: "0xB09aC2d78A7e8470E27B3ED6f834779fCb8C6A38"
+      abi: LendingPoolDF
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Received
+      abis:
+        - name: LendingPoolDF
+          file: ./abis/LendingPoolDF.json
+      eventHandlers:
+        - event: Received(address,address,address,uint256,bytes,bytes)
+          handler: handleReceived
+      file: ./src/mapping.ts

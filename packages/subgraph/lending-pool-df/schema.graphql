@@ -1,0 +1,9 @@
+type Received @entity {
+  id: ID!
+  operator: Bytes! # address
+  from: Bytes! # address
+  to: Bytes! # address
+  amount: BigInt! # uint256
+  userData: Bytes! # bytes
+  operatorData: Bytes! # bytes
+}
